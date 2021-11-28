@@ -3,17 +3,25 @@ service:
   message:
     document_png_send: "document.png.send"
     document_png_get: "document.png.get"
-    document_excel_send: "document.excel.send"
-    document_excel_get: "document.excel.get"
+    document_jpg_send: "document.jpg.send"
+    document_jpg_get: "document.jpg.get"
 router:
   host: "localhost"
   port: "8080"
   coockie: "handler.jwt"
+
   auth_path: "/auth"
-  png_send_path: "/png/:id/send"
-  png_get_path: "/png/:id/get"
-  excel_send_path: "/excel/:id/send"
-  excel_get_path: "/excel/:id/get"
+  registration_path: "/registration"
+
+  get_all_user_png: "/user/:id/png"
+  get_user_png: "/user/:id/png/:id"
+  post_user_png: "/user/:id/png"
+  delete_user_png: "/user/:id/png/:id"
+
+  get_all_user_jpg: "/user/:id/jpg"
+  get_user_jpg: "/user/:id/jpg/:id"
+  post_user_jpg: "/user/:id/jpg"
+  delete_user_jpg: "/user/:id/jpg/:id"
 rabbitmq:
   host: "localhost"
   port: "5672"

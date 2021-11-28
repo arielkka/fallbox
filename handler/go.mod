@@ -2,7 +2,12 @@ module github.com/arielkka/fallbox/handler
 
 go 1.17
 
-require github.com/labstack/echo/v4 v4.6.1
+require (
+	github.com/arielkka/rabbitmq v0.0.0-20211128192219-e3de74206ff6
+	github.com/golang-jwt/jwt v3.2.2+incompatible
+	github.com/labstack/echo/v4 v4.6.1
+	github.com/spf13/viper v1.9.0
+)
 
 require (
 	github.com/fsnotify/fsnotify v1.5.1 // indirect
@@ -17,7 +22,7 @@ require (
 	github.com/spf13/cast v1.4.1 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
-	github.com/spf13/viper v1.9.0 // indirect
+	github.com/streadway/amqp v1.0.0 // indirect
 	github.com/subosito/gotenv v1.2.0 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasttemplate v1.2.1 // indirect
@@ -25,6 +30,7 @@ require (
 	golang.org/x/net v0.0.0-20211123203042-d83791d6bcd9 // indirect
 	golang.org/x/sys v0.0.0-20211124211545-fe61309f8881 // indirect
 	golang.org/x/text v0.3.7 // indirect
+	golang.org/x/time v0.0.0-20201208040808-7e3f01d25324 // indirect
 	gopkg.in/ini.v1 v1.65.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
