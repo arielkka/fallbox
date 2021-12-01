@@ -35,12 +35,12 @@ func (r *router) Run() error {
 
 	r.e.POST(r.cfg.Router.AuthPath, r.auth)
 
-	r.e.GET(r.cfg.Router.GetUserPNG, r.GetUserPNG)
-	r.e.POST(r.cfg.Router.PostUserPNG, r.PostUserPNG)
-	r.e.DELETE(r.cfg.Router.DeleteUserPNG, r.DeleteUserPNG)
+	r.e.GET(r.cfg.Router.GetUserExcel, r.GetUserExcel)
+	r.e.POST(r.cfg.Router.PostUserExcel, r.PostUserExcel)
+	r.e.DELETE(r.cfg.Router.DeleteUserExcel, r.DeleteUserExcel)
 
-	r.e.GET(r.cfg.Router.GetUserJPG, r.GetUserJPG)
-	r.e.POST(r.cfg.Router.PostUserJPG, r.PostUserJPG)
-	r.e.DELETE(r.cfg.Router.DeleteUserJPG, r.DeleteUserJPG)
+	r.e.GET(r.cfg.Router.GetUserTxt, r.GetUserTxt)
+	r.e.POST(r.cfg.Router.PostUserTxt, r.PostUserTxt)
+	r.e.DELETE(r.cfg.Router.DeleteUserTxt, r.DeleteUserTxt)
 	return r.e.Start(fmt.Sprintf(":%s", r.cfg.Router.Port))
 }

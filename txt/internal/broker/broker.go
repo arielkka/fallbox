@@ -1,9 +1,11 @@
 package broker
 
 import (
+	"time"
+
+	"github.com/arielkka/fallbox/txt/config"
 	"github.com/arielkka/rabbitmq"
 	"github.com/streadway/amqp"
-	"time"
 )
 
 type Broker struct {

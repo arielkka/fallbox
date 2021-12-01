@@ -24,24 +24,23 @@ type Router struct {
 	AuthPath     string `mapstructure:"auth_path"`
 	Registration string `mapstructure:"registration_path"`
 
-	GetAllUserPNG string `mapstructure:"get_all_user_png"`
-	GetUserPNG    string `mapstructure:"get_user_png"`
-	PostUserPNG   string `mapstructure:"post_user_png"`
-	DeleteUserPNG string `mapstructure:"delete_user_png"`
+	GetUserExcel    string `mapstructure:"get_excel_png"`
+	PostUserExcel   string `mapstructure:"post_excel_png"`
+	DeleteUserExcel string `mapstructure:"delete_excel_png"`
 
-	GetAllUserJPG string `mapstructure:"get_all_user_jpg"`
-	GetUserJPG    string `mapstructure:"get_user_jpg"`
-	PostUserJPG   string `mapstructure:"post_user_jpg"`
-	DeleteUserJPG string `mapstructure:"delete_user_jpg"`
+	GetUserTxt    string `mapstructure:"get_txt_jpg"`
+	PostUserTxt   string `mapstructure:"post_txt_jpg"`
+	DeleteUserTxt string `mapstructure:"delete_txt_jpg"`
 }
 
 type Message struct {
-	DocumentPNGSend   string `mapstructure:"document_png_send"`
-	DocumentPNGGet    string `mapstructure:"document_png_get"`
-	DocumentPNGDelete string `mapstructure:"document_png_delete"`
-	DocumentJPGSend   string `mapstructure:"document_jpg_send"`
-	DocumentJPGGet    string `mapstructure:"document_jpg_get"`
-	DocumentJPGDelete string `mapstructure:"document_jpg_delete"`
+	DocumentExcelSend   string `mapstructure:"document_excel_send"`
+	DocumentExcelGet    string `mapstructure:"document_excel_get"`
+	DocumentExcelDelete string `mapstructure:"document_excel_delete"`
+
+	DocumentTXTSend   string `mapstructure:"document_txt_send"`
+	DocumentTXTGet    string `mapstructure:"document_txt_get"`
+	DocumentTXTDelete string `mapstructure:"document_txt_delete"`
 }
 
 type Database struct {

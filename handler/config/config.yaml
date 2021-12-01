@@ -1,12 +1,12 @@
 service:
   name: "handler"
   message:
-    document_png_send: "document.png.send"
-    document_png_get: "document.png.get"
-    document_png_delete: "document.png.delete"
-    document_jpg_send: "document.jpg.send"
-    document_jpg_get: "document.jpg.get"
-    document_jpg_delete: "document.jpg.delete"
+    document_excel_send: "document.excel.send"
+    document_excel_get: "document.excel.get"
+    document_excel_delete: "document.excel.delete"
+    document_txt_send: "document.txt.send"
+    document_txt_get: "document.txt.get"
+    document_txt_delete: "document.txt.delete"
 router:
   host: "localhost"
   port: "8080"
@@ -15,15 +15,13 @@ router:
   auth_path: "/auth"
   registration_path: "/registration"
 
-  get_all_user_png: "/user/:id/png"
-  get_user_png: "/user/:id/png/:id"
-  post_user_png: "/user/:id/png"
-  delete_user_png: "/user/:id/png/:id"
+  get_user_png: "/user/:id/txt/:id"
+  post_user_png: "/user/:id/txt"
+  delete_user_png: "/user/:id/txt/:id"
 
-  get_all_user_jpg: "/user/:id/jpg"
-  get_user_jpg: "/user/:id/jpg/:id"
-  post_user_jpg: "/user/:id/jpg"
-  delete_user_jpg: "/user/:id/jpg/:id"
+  get_user_excel: "/user/:id/excel/:id"
+  post_user_excel: "/user/:id/excel"
+  delete_user_excel: "/user/:id/excel/:id"
 rabbitmq:
   host: "localhost"
   port: "5672"

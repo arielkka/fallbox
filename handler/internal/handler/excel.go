@@ -9,10 +9,10 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func (r *router) GetUserJPG(c echo.Context) error {
-	j := new(models.JPG)
+func (r *router) GetUserExcel(c echo.Context) error {
+	req := new(models.Request)
 
-	err := json.NewDecoder(c.Request().Body).Decode(j)
+	err := json.NewDecoder(c.Request().Body).Decode(req)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err)
 	}
@@ -24,23 +24,17 @@ func (r *router) GetUserJPG(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, err)
 	}
 
-	body, err := r.service.GetUserJPG(userID.ID, j.ID)
+	err = r.service.GetUserExcel(userID.ID, req.ID)
 	if err != nil {
 		return c.JSON(http.StatusNotFound, err)
 	}
 
-	err = convertBytesToJPG(body, j.ID)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, echo.Map{
-			"err": err,
-		})
-	}
 	return c.JSON(http.StatusOK, echo.Map{
-		"message": fmt.Sprintf("receive your image by %s id :-)", j.ID),
+		"message": fmt.Sprintf("receive your excel by %v id :-)", req.ID),
 	})
 }
 
-func (r *router) PostUserJPG(c echo.Context) error {
+func (r *router) PostUserExcel(c echo.Context) error {
 	userID := new(models.UserID)
 
 	err := json.NewDecoder(c.Request().Body).Decode(userID)
@@ -48,36 +42,25 @@ func (r *router) PostUserJPG(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, err)
 	}
 
-	path := new(models.ImagePath)
+	req := new(models.Request)
 
-	err = json.NewDecoder(c.Request().Body).Decode(path)
+	err = json.NewDecoder(c.Request().Body).Decode(req)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err)
 	}
 
-	image, err := getImage(path.Path)
+	excelID, err := r.service.AddUserExcel(userID.ID, req.Body)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err)
 	}
 
-	bytes, err := convertPNGToBytes(image)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err)
-	}
-
-	jpgBytes := new(models.JPG)
-	jpgBytes.Body = bytes
-
-	jpgID, err := r.service.AddUserJPG(userID.ID, jpgBytes)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err)
-	}
 	return c.JSON(http.StatusOK, echo.Map{
-		"jpgID": jpgID,
+		"excelID": excelID,
 	})
+
 }
 
-func (r *router) DeleteUserJPG(c echo.Context) error {
+func (r *router) DeleteUserExcel(c echo.Context) error {
 	userID := new(models.UserID)
 
 	err := json.NewDecoder(c.Request().Body).Decode(userID)
@@ -85,18 +68,19 @@ func (r *router) DeleteUserJPG(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, err)
 	}
 
-	jpgID := new(models.JpgID)
+	req := new(models.Request)
 
-	err = json.NewDecoder(c.Request().Body).Decode(jpgID)
+	err = json.NewDecoder(c.Request().Body).Decode(req)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err)
 	}
 
-	err = r.service.DeleteUserJPG(userID.ID, jpgID.ID)
+	err = r.service.DeleteUserExcel(userID.ID, req.ID)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err)
 	}
+
 	return c.JSON(http.StatusOK, echo.Map{
-		"message": fmt.Sprintf("jpg №%s was deleted", jpgID),
+		"message": fmt.Sprintf("excel №%v was deleted", req.ID),
 	})
 }

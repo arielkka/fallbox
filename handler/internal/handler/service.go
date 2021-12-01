@@ -1,16 +1,14 @@
 package handler
 
-import "github.com/arielkka/fallbox/handler/internal/models"
-
 type Service interface {
-	GetUser(login, password string) (string,error)
+	GetUser(login, password string) (string, error)
 	CreateUser(login, password string) (string, error)
 
-	GetUserPNG(userID, pngID string) ([]byte, error)
-	AddUserPNG(userID string, png *models.PNG) (string, error)
-	DeleteUserPNG(userID, pngID string) error
+	GetUserTxt(userID string, txtID int) error
+	AddUserTxt(userID string, text []byte) (int, error)
+	DeleteUserTxt(userID string, txtID int) error
 
-	GetUserJPG(userID, jpgID string) ([]byte, error)
-	AddUserJPG(userID string, jpg *models.JPG) (string,error)
-	DeleteUserJPG(userID, jpgID string) error
+	GetUserExcel(userID string, excelID int) error
+	AddUserExcel(userID string, excel []byte) (int, error)
+	DeleteUserExcel(userID string, jpgID int) error
 }

@@ -19,12 +19,12 @@ func NewBroker(client *rabbitmq.Client, cfg *config.Config) *Broker {
 
 func InitDelivery(cfg *config.Config) map[string]chan *rabbitmq.Message {
 	m := make(map[string]chan *rabbitmq.Message, 0)
-	m[cfg.Service.Message.DocumentPNGGet] = make(chan *rabbitmq.Message)
-	m[cfg.Service.Message.DocumentPNGSend] = make(chan *rabbitmq.Message)
-	m[cfg.Service.Message.DocumentPNGDelete] = make(chan *rabbitmq.Message)
-	m[cfg.Service.Message.DocumentJPGGet] = make(chan *rabbitmq.Message)
-	m[cfg.Service.Message.DocumentJPGSend] = make(chan *rabbitmq.Message)
-	m[cfg.Service.Message.DocumentJPGDelete] = make(chan *rabbitmq.Message)
+	m[cfg.Service.Message.DocumentExcelGet] = make(chan *rabbitmq.Message)
+	m[cfg.Service.Message.DocumentExcelSend] = make(chan *rabbitmq.Message)
+	m[cfg.Service.Message.DocumentExcelDelete] = make(chan *rabbitmq.Message)
+	m[cfg.Service.Message.DocumentTXTGet] = make(chan *rabbitmq.Message)
+	m[cfg.Service.Message.DocumentTXTSend] = make(chan *rabbitmq.Message)
+	m[cfg.Service.Message.DocumentTXTDelete] = make(chan *rabbitmq.Message)
 	return m
 }
 
@@ -54,8 +54,8 @@ func (b *Broker) CreateListeners() error {
 
 	go func() {
 		err := b.client.StartConsumer(
-			b.cfg.Service.Message.DocumentPNGGet,
-			b.messages[b.cfg.Service.Message.DocumentPNGGet],
+			b.cfg.Service.Message.DocumentExcelGet,
+			b.messages[b.cfg.Service.Message.DocumentExcelGet],
 			true,
 		)
 		if err != nil {
@@ -65,8 +65,8 @@ func (b *Broker) CreateListeners() error {
 
 	go func() {
 		err := b.client.StartConsumer(
-			b.cfg.Service.Message.DocumentJPGGet,
-			b.messages[b.cfg.Service.Message.DocumentJPGGet],
+			b.cfg.Service.Message.DocumentTXTGet,
+			b.messages[b.cfg.Service.Message.DocumentTXTGet],
 			true)
 		if err != nil {
 			errors <- err
@@ -75,8 +75,8 @@ func (b *Broker) CreateListeners() error {
 
 	go func() {
 		err := b.client.StartConsumer(
-			b.cfg.Service.Message.DocumentPNGSend,
-			b.messages[b.cfg.Service.Message.DocumentPNGSend],
+			b.cfg.Service.Message.DocumentExcelSend,
+			b.messages[b.cfg.Service.Message.DocumentExcelSend],
 			true,
 		)
 		if err != nil {
@@ -86,8 +86,8 @@ func (b *Broker) CreateListeners() error {
 
 	go func() {
 		err := b.client.StartConsumer(
-			b.cfg.Service.Message.DocumentJPGSend,
-			b.messages[b.cfg.Service.Message.DocumentJPGSend],
+			b.cfg.Service.Message.DocumentTXTSend,
+			b.messages[b.cfg.Service.Message.DocumentTXTSend],
 			true)
 		if err != nil {
 			errors <- err
@@ -96,8 +96,8 @@ func (b *Broker) CreateListeners() error {
 
 	go func() {
 		err := b.client.StartConsumer(
-			b.cfg.Service.Message.DocumentPNGDelete,
-			b.messages[b.cfg.Service.Message.DocumentPNGDelete],
+			b.cfg.Service.Message.DocumentExcelDelete,
+			b.messages[b.cfg.Service.Message.DocumentExcelDelete],
 			true)
 		if err != nil {
 			errors <- err
@@ -106,8 +106,8 @@ func (b *Broker) CreateListeners() error {
 
 	go func() {
 		err := b.client.StartConsumer(
-			b.cfg.Service.Message.DocumentJPGDelete,
-			b.messages[b.cfg.Service.Message.DocumentJPGDelete],
+			b.cfg.Service.Message.DocumentTXTDelete,
+			b.messages[b.cfg.Service.Message.DocumentTXTDelete],
 			true)
 		if err != nil {
 			errors <- err
@@ -124,27 +124,27 @@ func (b *Broker) CreateListeners() error {
 }
 
 func (b *Broker) CreateExchanges() error {
-	err := b.client.CreateExchange(b.cfg.Service.Message.DocumentJPGSend)
+	err := b.client.CreateExchange(b.cfg.Service.Message.DocumentTXTSend)
 	if err != nil {
 		return err
 	}
-	err = b.client.CreateExchange(b.cfg.Service.Message.DocumentJPGGet)
+	err = b.client.CreateExchange(b.cfg.Service.Message.DocumentTXTGet)
 	if err != nil {
 		return err
 	}
-	err = b.client.CreateExchange(b.cfg.Service.Message.DocumentPNGGet)
+	err = b.client.CreateExchange(b.cfg.Service.Message.DocumentExcelGet)
 	if err != nil {
 		return err
 	}
-	err = b.client.CreateExchange(b.cfg.Service.Message.DocumentPNGSend)
+	err = b.client.CreateExchange(b.cfg.Service.Message.DocumentExcelSend)
 	if err != nil {
 		return err
 	}
-	err = b.client.CreateExchange(b.cfg.Service.Message.DocumentPNGDelete)
+	err = b.client.CreateExchange(b.cfg.Service.Message.DocumentExcelDelete)
 	if err != nil {
 		return err
 	}
-	err = b.client.CreateExchange(b.cfg.Service.Message.DocumentJPGDelete)
+	err = b.client.CreateExchange(b.cfg.Service.Message.DocumentTXTDelete)
 	if err != nil {
 		return err
 	}
@@ -152,27 +152,27 @@ func (b *Broker) CreateExchanges() error {
 }
 
 func (b *Broker) CreateQueues() error {
-	err := b.client.CreateQueue(b.cfg.Service.Message.DocumentPNGGet, true)
+	err := b.client.CreateQueue(b.cfg.Service.Message.DocumentExcelGet, true)
 	if err != nil {
 		return err
 	}
-	err = b.client.CreateQueue(b.cfg.Service.Message.DocumentJPGGet, true)
+	err = b.client.CreateQueue(b.cfg.Service.Message.DocumentTXTGet, true)
 	if err != nil {
 		return err
 	}
-	err = b.client.CreateQueue(b.cfg.Service.Message.DocumentPNGDelete, true)
+	err = b.client.CreateQueue(b.cfg.Service.Message.DocumentExcelDelete, true)
 	if err != nil {
 		return err
 	}
-	err = b.client.CreateQueue(b.cfg.Service.Message.DocumentJPGDelete, true)
+	err = b.client.CreateQueue(b.cfg.Service.Message.DocumentTXTDelete, true)
 	if err != nil {
 		return err
 	}
-	err = b.client.CreateQueue(b.cfg.Service.Message.DocumentPNGSend, true)
+	err = b.client.CreateQueue(b.cfg.Service.Message.DocumentExcelSend, true)
 	if err != nil {
 		return err
 	}
-	err = b.client.CreateQueue(b.cfg.Service.Message.DocumentJPGSend, true)
+	err = b.client.CreateQueue(b.cfg.Service.Message.DocumentTXTSend, true)
 	if err != nil {
 		return err
 	}
