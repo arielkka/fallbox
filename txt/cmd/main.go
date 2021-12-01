@@ -1,6 +1,6 @@
 package main
 
-import "gihub.com/arielkka/fallbox/txt/internal/app"
+import "github.com/arielkka/fallbox/txt/internal/app"
 
 func main() {
 	err := app.Run()

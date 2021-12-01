@@ -8,7 +8,7 @@ type Excel struct {
 	db *sqlx.DB
 }
 
-func NewPngStorage(db *sqlx.DB) *Excel {
+func NewExcelStorage(db *sqlx.DB) *Excel {
 	return &Excel{db: db}
 }
 

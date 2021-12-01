@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/arielkka/fallbox/txt/internal/storage"
+	"github.com/arielkka/fallbox/excel/internal/storage"
 	"github.com/jmoiron/sqlx"
 )
 
@@ -17,6 +17,6 @@ type Storage struct {
 
 func NewStorage(db *sqlx.DB) *Storage {
 	return &Storage{
-		storage.NewPngStorage(db),
+		storage.NewExcelStorage(db),
 	}
 }
