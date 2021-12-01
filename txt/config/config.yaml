@@ -1,0 +1,37 @@
+service:
+  name: "txt"
+  message:
+    document_txt_send: "document.txt.send"
+    document_txt_get: "document.txt.get"
+    document_txt_delete: "document.txt.delete"
+rabbitmq:
+  host: "localhost"
+  port: "5672"
+  user: "guest"
+  password: "guest"
+db:
+  host: "localhost"
+  port: "3309"
+  user: "root"
+  password: "root"
+  name: "txt_db"
+delivery:
+  queue:
+    durable: true
+    auto_delete: false
+    exclusive: true
+    no_wait: false
+  channel:
+    auto_ack: true
+    exclusive: false
+    no_local: false
+    no_wait: false
+  publish:
+    mandatory: false
+    immediate: false
+  exchange:
+    type: "fanout"
+    durable: true
+    auto_delete: false
+    internal: false
+    no_wait: false

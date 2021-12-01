@@ -21,35 +21,35 @@ services:
       - "3307:3306"
     environment:
       - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=fallbox
+      - MYSQL_DATABASE=handler_db
     volumes:
       - ./handler/schema:/schema/
     networks:
       - dev-network
 
-  jpg-service-db:
+  excel-service-db:
     restart: always
     image: mysql:latest
     ports:
-      - "3307:3306"
+      - "3308:3306"
     environment:
       - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=fallbox
+      - MYSQL_DATABASE=excel_db
     volumes:
-      - ./jpg/schema:/schema/
+      - ./excel/schema:/schema/
     networks:
       - dev-network
 
-  png-service-db:
+  txt-service-db:
     restart: always
     image: mysql:latest
     ports:
-      - "3307:3306"
+      - "3309:3306"
     environment:
       - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=fallbox
+      - MYSQL_DATABASE=txt_db
     volumes:
-      - ./png/schema:/schema/
+      - ./txt/schema:/schema/
     networks:
       - dev-network
 

@@ -2,7 +2,6 @@ package service
 
 import (
 	"encoding/json"
-
 	"github.com/arielkka/fallbox/handler/config"
 	"github.com/arielkka/fallbox/handler/internal/models"
 	"github.com/arielkka/fallbox/handler/pkg/errors"
@@ -13,10 +12,10 @@ import (
 type Service struct {
 	cfg     *config.Config
 	broker  Broker
-	storage IStorage
+	storage IUser
 }
 
-func NewService(cfg *config.Config, broker Broker, storage IStorage) *Service {
+func NewService(cfg *config.Config, broker Broker, storage IUser) *Service {
 	return &Service{
 		cfg:     cfg,
 		broker:  broker,

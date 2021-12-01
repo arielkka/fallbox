@@ -5,13 +5,13 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-type IStorage interface {
+type IUser interface {
 	GetUser(login, password string) (string, error)
 	CreateUser(login, password, id string) error
 }
 
 type Storage struct {
-	IStorage
+	IUser
 }
 
 func NewStorage(db *sqlx.DB) *Storage {
