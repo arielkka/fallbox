@@ -1,0 +1,37 @@
+service:
+  name: "png"
+  message:
+    document_png_send: "document.png.send"
+    document_png_get: "document.png.get"
+    document_png_delete: "document.png.delete"
+rabbitmq:
+  host: "localhost"
+  port: "5672"
+  user: "guest"
+  password: "guest"
+db:
+  host: "localhost"
+  port: "3308"
+  user: "root"
+  password: "root"
+  name: "png_db"
+delivery:
+  queue:
+    durable: true
+    auto_delete: false
+    exclusive: true
+    no_wait: false
+  channel:
+    auto_ack: true
+    exclusive: false
+    no_local: false
+    no_wait: false
+  publish:
+    mandatory: false
+    immediate: false
+  exchange:
+    type: "fanout"
+    durable: true
+    auto_delete: false
+    internal: false
+    no_wait: false

@@ -17,14 +17,14 @@ import (
 )
 
 func init() {
-	if err := godotenv.Load("../../../.env"); err != nil {
-		fmt.Println("No .env file found")
+	if err := godotenv.Load("./handler.env"); err != nil {
+		fmt.Println("No .env file found", err)
 	}
 }
 
 func Run() error {
-	log := logger.NewLogrus(os.Getenv("LOGGER_PATH") + "/handler.log")
-	log.Info("logger was initialized")
+	log := logger.NewLogrus(os.Getenv("LOGGER_PATH_HANDLER") + "/handler.log")
+	log.Info("logger was initialized", " ", os.Getenv("LOGGER_PATH_HANDLER"), " ", os.Getenv("CONFIG_PATH_HANDLER"))
 
 	serviceConfig, err := config.NewServiceConfig(os.Getenv("CONFIG_PATH_HANDLER"))
 	if err != nil {

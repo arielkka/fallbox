@@ -10,7 +10,7 @@ service:
 router:
   host: "localhost"
   port: "8080"
-  coockie: "handler.jwt"
+  cookie: "handler.jwt"
 
   auth_path: "/auth"
   registration_path: "/registration"
@@ -30,11 +30,11 @@ rabbitmq:
   user: "guest"
   password: "guest"
 db:
-  host: "mysql"
-  port: "3306"
+  host: "localhost"
+  port: "3307"
   user: "root"
   password: "root"
-  name: "fallbox"
+  name: "handler_db"
 delivery:
   queue:
     durable: true

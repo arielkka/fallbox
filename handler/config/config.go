@@ -6,8 +6,8 @@ import (
 )
 
 type Config struct {
-	Router  `mapstructure:"router"`
-	Service `mapstructure:"service"`
+	Router   `mapstructure:"router"`
+	Service  `mapstructure:"service"`
 	Database `mapstructure:"db"`
 }
 
@@ -36,11 +36,11 @@ type Router struct {
 }
 
 type Message struct {
-	DocumentPNGSend string `mapstructure:"document_png_send"`
-	DocumentPNGGet  string `mapstructure:"document_png_get"`
+	DocumentPNGSend   string `mapstructure:"document_png_send"`
+	DocumentPNGGet    string `mapstructure:"document_png_get"`
 	DocumentPNGDelete string `mapstructure:"document_png_delete"`
-	DocumentJPGSend string `mapstructure:"document_jpg_send"`
-	DocumentJPGGet  string `mapstructure:"document_jpg_get"`
+	DocumentJPGSend   string `mapstructure:"document_jpg_send"`
+	DocumentJPGGet    string `mapstructure:"document_jpg_get"`
 	DocumentJPGDelete string `mapstructure:"document_jpg_delete"`
 }
 
@@ -52,10 +52,9 @@ type Database struct {
 	Name     string `mapstructure:"name"`
 }
 
-func NewServiceConfig(configFile string) (*Config, error) {
+func NewServiceConfig(path string) (*Config, error) {
 	var c *Config
-	viper.SetConfigName(configFile)
-	viper.AddConfigPath(".")
+	viper.AddConfigPath(path)
 	err := viper.ReadInConfig()
 	if err != nil {
 		return nil, err
@@ -67,10 +66,9 @@ func NewServiceConfig(configFile string) (*Config, error) {
 	return c, nil
 }
 
-func NewRabbitMQConfig(configFile string) (*rabbitmq.Config, error) {
+func NewRabbitMQConfig(path string) (*rabbitmq.Config, error) {
 	var c *rabbitmq.Config
-	viper.SetConfigName(configFile)
-	viper.AddConfigPath(".")
+	viper.AddConfigPath(path)
 	err := viper.ReadInConfig()
 	if err != nil {
 		return nil, err
