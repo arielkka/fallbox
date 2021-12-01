@@ -1,17 +1,5 @@
 SET FOREIGN_KEY_CHECKS=0
-; 
-/* Drop Tables */
-
-DROP TABLE IF EXISTS `jpg` CASCADE
 ;
-
-DROP TABLE IF EXISTS `png` CASCADE
-;
-
-DROP TABLE IF EXISTS `user` CASCADE
-;
-
-/* Create Tables */
 
 CREATE TABLE `jpg`
 (
@@ -20,7 +8,6 @@ CREATE TABLE `jpg`
 	`image` BLOB NOT NULL,
 	CONSTRAINT `PK_jpg` PRIMARY KEY (`id` ASC)
 )
-
 ;
 
 CREATE TABLE `png`
@@ -30,7 +17,6 @@ CREATE TABLE `png`
 	`image` BLOB NOT NULL,
 	CONSTRAINT `PK_png` PRIMARY KEY (`id` ASC)
 )
-
 ;
 
 CREATE TABLE `user`
@@ -40,10 +26,8 @@ CREATE TABLE `user`
 	`password` VARCHAR(50) NOT NULL,
 	CONSTRAINT `PK_Table A` PRIMARY KEY (`id` ASC)
 )
-
 ;
 
-/* Create Primary Keys, Indexes, Uniques, Checks */
 
 ALTER TABLE `jpg` 
  ADD INDEX `IXFK_jpg_user` (`user_id` ASC)
