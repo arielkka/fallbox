@@ -8,27 +8,42 @@ type (
 		Login    string `db:"login" json:"login"`
 		Password string `db:"password" json:"password"`
 	}
+
 	UserID struct {
 		ID string `json:"id"`
 	}
+
+	ImagePath struct {
+		Path string `json:"path"`
+	}
+
 	PNG struct {
-		ID string `json:"id,omitempty"`
+		ID   string `json:"id,omitempty"`
 		Body []byte `json:"body"`
 	}
+
 	PngID struct {
 		ID string `json:"id"`
 	}
+
 	JPG struct {
-		ID string `json:"id,omitempty"`
+		ID   string `json:"id,omitempty"`
 		Body []byte `json:"body"`
 	}
+
 	JpgID struct {
 		ID string `json:"id"`
 	}
+
+	IsDeleted struct {
+		Flag bool `json:"is_deleted"`
+	}
+
 	Request struct {
 		UserID string `json:"user_id,omitempty"`
 		PngID  string `json:"png_id,omitempty"`
 		JpgID  string `json:"jpg_id,omitempty"`
+		Body   []byte `json:"body,omitempty"`
 	}
 )
 
@@ -65,4 +80,12 @@ func (j *JpgID) MarshalBinary() ([]byte, error) {
 
 func (p *PngID) MarshalBinary() ([]byte, error) {
 	return json.Marshal(p)
+}
+
+func (i *ImagePath) MarshalBinary() ([]byte, error) {
+	return json.Marshal(i)
+}
+
+func (i *IsDeleted) MarshalBinary() ([]byte, error) {
+	return json.Marshal(i)
 }

@@ -28,11 +28,10 @@ func (r *router) Run() error {
 	r.e.Use(middleware.RequestID())
 
 	config := middleware.JWTConfig{
-		Claims: &jwtCustomClaims{},
+		Claims:     &jwtCustomClaims{},
 		SigningKey: []byte(os.Getenv("JWT_SECRET_KEY")),
 	}
 	r.e.Use(middleware.JWTWithConfig(config))
-
 
 	r.e.POST(r.cfg.Router.AuthPath, r.auth)
 

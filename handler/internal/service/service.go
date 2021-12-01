@@ -2,26 +2,29 @@ package service
 
 import (
 	"encoding/json"
+
 	"github.com/arielkka/fallbox/handler/config"
 	"github.com/arielkka/fallbox/handler/internal/models"
+	"github.com/arielkka/fallbox/handler/pkg/errors"
+
 	"github.com/google/uuid"
 )
 
 type Service struct {
 	cfg     *config.Config
-	broker Broker
-	storage Storage
+	broker  Broker
+	storage IStorage
 }
 
-func NewService(cfg *config.Config, broker Broker, storage Storage) *Service {
+func NewService(cfg *config.Config, broker Broker, storage IStorage) *Service {
 	return &Service{
 		cfg:     cfg,
-		broker: broker,
+		broker:  broker,
 		storage: storage,
 	}
 }
 
-func (s *Service) GetUser(login, password string) (string,error) {
+func (s *Service) GetUser(login, password string) (string, error) {
 	id, err := s.storage.GetUser(login, password)
 	if err != nil {
 		return "", err
@@ -43,10 +46,9 @@ func (s *Service) GetUserPNG(userID, pngID string) ([]byte, error) {
 	request := &models.Request{
 		UserID: userID,
 		PngID:  pngID,
-		JpgID:  "",
 	}
 	requestJSON, err := json.Marshal(request)
-	if err	!= nil {
+	if err != nil {
 		return nil, err
 	}
 	err = s.broker.Publish(s.cfg.Service.Message.DocumentPNGGet, correlationID.String(), requestJSON)
@@ -64,22 +66,75 @@ func (s *Service) GetUserPNG(userID, pngID string) ([]byte, error) {
 }
 
 func (s *Service) AddUserPNG(userID string, png *models.PNG) (string, error) {
-	panic("implement me")
+	correlationID := uuid.New().String()
+
+	request := &models.Request{
+		Body: png.Body,
+	}
+	requestJSON, err := json.Marshal(request)
+	if err != nil {
+		return "", err
+	}
+
+	err = s.broker.Publish(s.cfg.Service.Message.DocumentPNGSend, correlationID, requestJSON)
+	if err != nil {
+		return "", err
+	}
+
+	response, err := s.broker.Subscribe(s.cfg.Service.Message.DocumentPNGSend, correlationID)
+	if err != nil {
+		return "", err
+	}
+
+	pngID := new(models.PngID)
+	err = json.Unmarshal(response, pngID)
+	if err != nil {
+		return "", err
+	}
+	return pngID.ID, nil
 }
 
 func (s *Service) DeleteUserPNG(userID, pngID string) error {
-	panic("implement me")
+	correlationID := uuid.New().String()
+
+	request := &models.Request{
+		UserID: userID,
+		PngID:  pngID,
+	}
+	requestJSON, err := json.Marshal(request)
+	if err != nil {
+		return err
+	}
+
+	err = s.broker.Publish(s.cfg.Service.Message.DocumentPNGDelete, correlationID, requestJSON)
+	if err != nil {
+		return err
+	}
+
+	response, err := s.broker.Subscribe(s.cfg.Service.Message.DocumentPNGDelete, correlationID)
+	if err != nil {
+		return err
+	}
+
+	isDeleted := new(models.IsDeleted)
+	err = json.Unmarshal(response, isDeleted)
+	if err != nil {
+		return err
+	}
+	if !isDeleted.Flag {
+		return errors.NotFound()
+	}
+	return nil
 }
 
 func (s *Service) GetUserJPG(userID, jpgID string) ([]byte, error) {
 	correlationID := uuid.New()
 	request := &models.Request{
 		UserID: userID,
-		PngID:  "",
 		JpgID:  jpgID,
 	}
 	requestJSON, err := json.Marshal(request)
-	if err	!= nil {
+	if err != nil {
 		return nil, err
 	}
 	err = s.broker.Publish(s.cfg.Service.Message.DocumentJPGGet, correlationID.String(), requestJSON)
@@ -97,9 +152,63 @@ func (s *Service) GetUserJPG(userID, jpgID string) ([]byte, error) {
 }
 
 func (s *Service) AddUserJPG(userID string, jpg *models.JPG) (string, error) {
-	panic("implement me")
+	correlationID := uuid.New().String()
+
+	request := &models.Request{
+		Body: jpg.Body,
+	}
+	requestJSON, err := json.Marshal(request)
+	if err != nil {
+		return "", err
+	}
+
+	err = s.broker.Publish(s.cfg.Service.Message.DocumentJPGSend, correlationID, requestJSON)
+	if err != nil {
+		return "", err
+	}
+
+	response, err := s.broker.Subscribe(s.cfg.Service.Message.DocumentJPGSend, correlationID)
+	if err != nil {
+		return "", err
+	}
+
+	jpgID := new(models.JpgID)
+	err = json.Unmarshal(response, jpgID)
+	if err != nil {
+		return "", err
+	}
+	return jpgID.ID, nil
 }
 
-func (s *Service) DeleteUserJPG(userID, pngID string) error {
-	panic("implement me")
+func (s *Service) DeleteUserJPG(userID, jpgID string) error {
+	correlationID := uuid.New().String()
+
+	request := &models.Request{
+		UserID: userID,
+		JpgID:  jpgID,
+	}
+	requestJSON, err := json.Marshal(request)
+	if err != nil {
+		return err
+	}
+
+	err = s.broker.Publish(s.cfg.Service.Message.DocumentJPGDelete, correlationID, requestJSON)
+	if err != nil {
+		return err
+	}
+
+	response, err := s.broker.Subscribe(s.cfg.Service.Message.DocumentJPGDelete, correlationID)
+	if err != nil {
+		return err
+	}
+
+	isDeleted := new(models.IsDeleted)
+	err = json.Unmarshal(response, isDeleted)
+	if err != nil {
+		return err
+	}
+	if !isDeleted.Flag {
+		return errors.NotFound()
+	}
+	return nil
 }

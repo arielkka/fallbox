@@ -51,6 +51,7 @@ func (b *Broker) Subscribe(messageType string, correlationID string) ([]byte, er
 
 func (b *Broker) CreateListeners() error {
 	errors := make(chan error)
+
 	go func() {
 		err := b.client.StartConsumer(
 			b.cfg.Service.Message.DocumentPNGGet,
@@ -74,7 +75,28 @@ func (b *Broker) CreateListeners() error {
 
 	go func() {
 		err := b.client.StartConsumer(
-			b.cfg.Service.Message.DocumentJPGGet,
+			b.cfg.Service.Message.DocumentPNGSend,
+			b.messages[b.cfg.Service.Message.DocumentPNGSend],
+			true,
+		)
+		if err != nil {
+			errors <- err
+		}
+	}()
+
+	go func() {
+		err := b.client.StartConsumer(
+			b.cfg.Service.Message.DocumentJPGSend,
+			b.messages[b.cfg.Service.Message.DocumentJPGSend],
+			true)
+		if err != nil {
+			errors <- err
+		}
+	}()
+
+	go func() {
+		err := b.client.StartConsumer(
+			b.cfg.Service.Message.DocumentPNGDelete,
 			b.messages[b.cfg.Service.Message.DocumentPNGDelete],
 			true)
 		if err != nil {
@@ -82,10 +104,9 @@ func (b *Broker) CreateListeners() error {
 		}
 	}()
 
-
 	go func() {
 		err := b.client.StartConsumer(
-			b.cfg.Service.Message.DocumentJPGGet,
+			b.cfg.Service.Message.DocumentJPGDelete,
 			b.messages[b.cfg.Service.Message.DocumentJPGDelete],
 			true)
 		if err != nil {
@@ -144,6 +165,14 @@ func (b *Broker) CreateQueues() error {
 		return err
 	}
 	err = b.client.CreateQueue(b.cfg.Service.Message.DocumentJPGDelete, true)
+	if err != nil {
+		return err
+	}
+	err = b.client.CreateQueue(b.cfg.Service.Message.DocumentPNGSend, true)
+	if err != nil {
+		return err
+	}
+	err = b.client.CreateQueue(b.cfg.Service.Message.DocumentJPGSend, true)
 	if err != nil {
 		return err
 	}
