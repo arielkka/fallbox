@@ -8,6 +8,7 @@ import (
 type Config struct {
 	Router  `mapstructure:"router"`
 	Service `mapstructure:"service"`
+	Database `mapstructure:"db"`
 }
 
 type Service struct {
@@ -37,8 +38,18 @@ type Router struct {
 type Message struct {
 	DocumentPNGSend string `mapstructure:"document_png_send"`
 	DocumentPNGGet  string `mapstructure:"document_png_get"`
+	DocumentPNGDelete string `mapstructure:"document_png_delete"`
 	DocumentJPGSend string `mapstructure:"document_jpg_send"`
-	DocumentEPGGet  string `mapstructure:"document_jpg_get"`
+	DocumentJPGGet  string `mapstructure:"document_jpg_get"`
+	DocumentJPGDelete string `mapstructure:"document_jpg_delete"`
+}
+
+type Database struct {
+	Host     string `mapstructure:"host"`
+	Port     string `mapstructure:"port"`
+	User     string `mapstructure:"user"`
+	Password string `mapstructure:"password"`
+	Name     string `mapstructure:"name"`
 }
 
 func NewServiceConfig(configFile string) (*Config, error) {

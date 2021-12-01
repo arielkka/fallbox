@@ -3,8 +3,10 @@ service:
   message:
     document_png_send: "document.png.send"
     document_png_get: "document.png.get"
+    document_png_delete: "document.png.delete"
     document_jpg_send: "document.jpg.send"
     document_jpg_get: "document.jpg.get"
+    document_jpg_delete: "document.jpg.delete"
 router:
   host: "localhost"
   port: "8080"
@@ -27,6 +29,12 @@ rabbitmq:
   port: "5672"
   user: "guest"
   password: "guest"
+db:
+  host: "mysql"
+  port: "3306"
+  user: "root"
+  password: "root"
+  name: "fallbox"
 delivery:
   queue:
     durable: true
