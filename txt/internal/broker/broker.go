@@ -1,6 +1,7 @@
 package broker
 
 import (
+	"github.com/arielkka/fallbox/txt/internal/models"
 	"time"
 
 	"github.com/arielkka/fallbox/txt/config"
@@ -30,6 +31,10 @@ func (b *Broker) Ping() error {
 	return b.client.Ping()
 }
 
+func (b *Broker) Respond(consumer, msg, corrID string, body []byte) error {
+	return b.client.SendReply(consumer, msg, corrID, body)
+}
+
 func (b *Broker) Publish(messageType string, correlationID string, body []byte) error {
 	err := b.client.SendMessage(messageType, correlationID, body)
 	if err != nil {
@@ -38,15 +43,12 @@ func (b *Broker) Publish(messageType string, correlationID string, body []byte) 
 	return nil
 }
 
-func (b *Broker) Subscribe(messageType string, correlationID string) ([]byte, error) {
+func (b *Broker) Subscribe(messageType string) (*models.Message, error) {
 	for message := range b.messages[messageType] {
-		if message.GetID() == correlationID {
-			return message.GetBody(), nil
-		}
+		return models.NewMessage(message.GetText(), message.GetID(), message.GetReplyTo(), message.GetBody()), nil
 	}
-	return nil, amqp.Error{Code: 400}
+	return nil, amqp.Error{Code: 408}
 }
-
 func (b *Broker) CreateListeners() error {
 	errors := make(chan error)
 

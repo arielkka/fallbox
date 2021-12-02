@@ -10,18 +10,19 @@ service:
 router:
   host: "localhost"
   port: "8080"
-  cookie: "handler.jwt"
+  cookie_token: "fallbox.jwt_token"
+  cookie_user_id: "fallbox.user_id"
 
   auth_path: "/auth"
   registration_path: "/registration"
 
-  get_user_png: "/user/:id/txt/:id"
-  post_user_png: "/user/:id/txt"
-  delete_user_png: "/user/:id/txt/:id"
+  get_user_txt: "/user/txt"
+  post_user_txt: "/user/txt"
+  delete_user_txt: "/user/txt"
 
-  get_user_excel: "/user/:id/excel/:id"
-  post_user_excel: "/user/:id/excel"
-  delete_user_excel: "/user/:id/excel/:id"
+  get_user_excel: "/user/excel"
+  post_user_excel: "/user/excel"
+  delete_user_excel: "/user/excel"
 rabbitmq:
   host: "localhost"
   port: "5672"

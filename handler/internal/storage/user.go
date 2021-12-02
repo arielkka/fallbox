@@ -25,7 +25,7 @@ func (u *User) GetUser(login, password string) (string, error) {
 }
 
 func (u *User) CreateUser(login, password, id string) error {
-	query := fmt.Sprintf("INSERT INTO positions(login, password, id) VALUES ('%s','%s','%s')", login, password, id)
+	query := fmt.Sprintf("INSERT INTO user(login, password, id) VALUES ('%s','%s','%s')", login, password, id)
 	_, err := u.db.Exec(query)
 	if err != nil {
 		return err

@@ -2,10 +2,11 @@ package handler
 
 import (
 	"fmt"
+	"os"
+
 	"github.com/arielkka/fallbox/handler/config"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"os"
 )
 
 type router struct {
@@ -28,12 +29,14 @@ func (r *router) Run() error {
 	r.e.Use(middleware.RequestID())
 
 	config := middleware.JWTConfig{
-		Claims:     &jwtCustomClaims{},
-		SigningKey: []byte(os.Getenv("JWT_SECRET_KEY")),
+		Skipper:     r.SkipJWTMiddleware,
+		TokenLookup: "cookie:fallbox.jwt_token",
+		SigningKey:  []byte(os.Getenv("JWT_SECRET_KEY")),
 	}
 	r.e.Use(middleware.JWTWithConfig(config))
 
 	r.e.POST(r.cfg.Router.AuthPath, r.auth)
+	r.e.POST(r.cfg.Router.Registration, r.registration)
 
 	r.e.GET(r.cfg.Router.GetUserExcel, r.GetUserExcel)
 	r.e.POST(r.cfg.Router.PostUserExcel, r.PostUserExcel)

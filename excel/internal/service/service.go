@@ -2,10 +2,11 @@ package service
 
 import (
 	"encoding/json"
+	"sync"
+
 	"github.com/arielkka/fallbox/excel/config"
 	"github.com/arielkka/fallbox/excel/internal/models"
 	logger "github.com/arielkka/fallbox/excel/pkg/logrus"
-	"sync"
 )
 
 var mutex = sync.Mutex{}
@@ -30,69 +31,69 @@ func (s *Service) Run() {
 	stop := make(chan struct{})
 
 	go func() {
-		mutex.Lock()
-		message, err := s.broker.Subscribe(s.cfg.Service.Message.DocumentExcelSend)
-		if err != nil {
-			s.logger.Errorf("error = %s", err)
-		}
-		body, err := s.AddExcel(message.Body)
-		if err != nil {
-			s.logger.Errorf("error = %s", err)
-			err = s.broker.Respond(message.ReplyTo, s.cfg.Service.Message.DocumentExcelSend, message.ID, body)
+		for {
+			message, err := s.broker.Subscribe(s.cfg.Service.Message.DocumentExcelSend)
 			if err != nil {
-				s.logger.Fatalf("error = %s", err)
+				s.logger.Errorf("error = %s", err)
 			}
-		} else {
-			err = s.broker.Respond(message.ReplyTo, s.cfg.Service.Message.DocumentExcelSend, message.ID, body)
+			body, err := s.AddExcel(message.Body)
 			if err != nil {
-				s.logger.Fatalf("error = %s", err)
+				s.logger.Errorf("error = %s", err)
+				err = s.broker.Respond(message.ReplyTo, s.cfg.Service.Message.DocumentExcelSend, message.ID, body)
+				if err != nil {
+					s.logger.Fatalf("error = %s", err)
+				}
+			} else {
+				err = s.broker.Respond(message.ReplyTo, s.cfg.Service.Message.DocumentExcelSend, message.ID, body)
+				if err != nil {
+					s.logger.Fatalf("error = %s", err)
+				}
 			}
 		}
-		mutex.Unlock()
 	}()
 
 	go func() {
-		mutex.Lock()
-		message, err := s.broker.Subscribe(s.cfg.Service.Message.DocumentExcelGet)
-		if err != nil {
-			s.logger.Errorf("error = %s", err)
-		}
-		body, err := s.GetExcel(message.Body)
-		if err != nil {
-			s.logger.Errorf("error = %s", err)
-			err = s.broker.Respond(message.ReplyTo, s.cfg.Service.Message.DocumentExcelGet, message.ID, body)
+		for {
+			message, err := s.broker.Subscribe(s.cfg.Service.Message.DocumentExcelGet)
 			if err != nil {
-				s.logger.Fatalf("error = %s", err)
+				s.logger.Errorf("error = %s", err)
 			}
-		} else {
-			err = s.broker.Respond(message.ReplyTo, s.cfg.Service.Message.DocumentExcelGet, message.ID, body)
+			body, err := s.GetExcel(message.Body)
 			if err != nil {
-				s.logger.Fatalf("error = %s", err)
+				s.logger.Errorf("error = %s", err)
+				err = s.broker.Respond(message.ReplyTo, s.cfg.Service.Message.DocumentExcelGet, message.ID, body)
+				if err != nil {
+					s.logger.Fatalf("error = %s", err)
+				}
+			} else {
+				err = s.broker.Respond(message.ReplyTo, s.cfg.Service.Message.DocumentExcelGet, message.ID, body)
+				if err != nil {
+					s.logger.Fatalf("error = %s", err)
+				}
 			}
 		}
-		mutex.Unlock()
 	}()
 
 	go func() {
-		mutex.Lock()
-		message, err := s.broker.Subscribe(s.cfg.Service.Message.DocumentExcelDelete)
-		if err != nil {
-			s.logger.Errorf("error = %s", err)
-		}
-		body, err := s.DeleteExcel(message.Body)
-		if err != nil {
-			s.logger.Errorf("error = %s", err)
-			err = s.broker.Respond(message.ReplyTo, s.cfg.Service.Message.DocumentExcelDelete, message.ID, body)
+		for {
+			message, err := s.broker.Subscribe(s.cfg.Service.Message.DocumentExcelDelete)
 			if err != nil {
-				s.logger.Fatalf("error = %s", err)
+				s.logger.Errorf("error = %s", err)
 			}
-		} else {
-			err = s.broker.Respond(message.ReplyTo, s.cfg.Service.Message.DocumentExcelDelete, message.ID, body)
+			body, err := s.DeleteExcel(message.Body)
 			if err != nil {
-				s.logger.Fatalf("error = %s", err)
+				s.logger.Errorf("error = %s", err)
+				err = s.broker.Respond(message.ReplyTo, s.cfg.Service.Message.DocumentExcelDelete, message.ID, body)
+				if err != nil {
+					s.logger.Fatalf("error = %s", err)
+				}
+			} else {
+				err = s.broker.Respond(message.ReplyTo, s.cfg.Service.Message.DocumentExcelDelete, message.ID, body)
+				if err != nil {
+					s.logger.Fatalf("error = %s", err)
+				}
 			}
 		}
-		mutex.Unlock()
 	}()
 	<-stop
 }

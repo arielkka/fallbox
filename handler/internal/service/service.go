@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"os"
 
 	"github.com/arielkka/fallbox/handler/config"
@@ -35,13 +36,13 @@ func (s *Service) GetUser(login, password string) (string, error) {
 	return id, nil
 }
 
-func (s *Service) CreateUser(login, password string) (string, error) {
+func (s *Service) CreateUser(login, password string) error {
 	id := uuid.New()
 	err := s.storage.CreateUser(login, password, id.String())
 	if err != nil {
-		return "", err
+		return err
 	}
-	return id.String(), nil
+	return nil
 }
 
 func (s *Service) GetUserTxt(userID string, txtID int) error {
@@ -60,24 +61,30 @@ func (s *Service) GetUserTxt(userID string, txtID int) error {
 	}
 	response, err := s.broker.Subscribe(s.cfg.Service.Message.DocumentTXTGet, correlationID)
 
-	txt := new(models.Response)
-	err = json.Unmarshal(response, txt)
+	text := new(models.Response)
+	text.ID = txtID
+	err = json.Unmarshal(response, text)
 	if err != nil {
 		return err
 	}
-	err = s.downloadTxt(txt)
+
+	err = s.downloadTxt(text)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (s *Service) AddUserTxt(userID string, text []byte) (int, error) {
+func (s *Service) AddUserTxt(userID string, path string) (int, error) {
 	correlationID := uuid.New().String()
 
+	file, err := s.openFile(path)
+	if err != nil {
+		return -1, err
+	}
 	request := &models.Request{
 		UserID: userID,
-		Body:   text,
+		Body:   file,
 	}
 	requestJSON, err := json.Marshal(request)
 	if err != nil {
@@ -94,12 +101,12 @@ func (s *Service) AddUserTxt(userID string, text []byte) (int, error) {
 		return -1, err
 	}
 
-	txtID := new(models.Response)
-	err = json.Unmarshal(response, txtID)
+	textID := new(models.Response)
+	err = json.Unmarshal(response, textID)
 	if err != nil {
 		return -1, err
 	}
-	return txtID.ID, nil
+	return textID.ID, nil
 }
 
 func (s *Service) DeleteUserTxt(userID string, txtID int) error {
@@ -152,10 +159,12 @@ func (s *Service) GetUserExcel(userID string, excelID int) error {
 	response, err := s.broker.Subscribe(s.cfg.Service.Message.DocumentExcelGet, correlationID)
 
 	excel := new(models.Response)
+	excel.ID = excelID
 	err = json.Unmarshal(response, excel)
 	if err != nil {
 		return err
 	}
+
 	err = s.downloadExcel(excel)
 	if err != nil {
 		return err
@@ -163,12 +172,16 @@ func (s *Service) GetUserExcel(userID string, excelID int) error {
 	return nil
 }
 
-func (s *Service) AddUserExcel(userID string, excel []byte) (int, error) {
+func (s *Service) AddUserExcel(userID string, path string) (int, error) {
 	correlationID := uuid.New().String()
 
+	file, err := s.openFile(path)
+	if err != nil {
+		return -1, err
+	}
 	request := &models.Request{
 		UserID: userID,
-		Body:   excel,
+		Body:   file,
 	}
 	requestJSON, err := json.Marshal(request)
 	if err != nil {
@@ -226,13 +239,17 @@ func (s *Service) DeleteUserExcel(userID string, excelID int) error {
 	return nil
 }
 
+func (s *Service) openFile(path string) ([]byte, error) {
+	return ioutil.ReadFile(path)
+}
+
 func (s *Service) downloadExcel(resp *models.Response) error {
 	buffer := bytes.NewBuffer(resp.Body)
 	all, err := io.ReadAll(buffer)
 	if err != nil {
 		return err
 	}
-	file, err := os.Create(fmt.Sprintf("../../output/%v.xlsx", resp.ID))
+	file, err := os.Create(fmt.Sprintf("./output/%v.xlsx", resp.ID))
 	if err != nil {
 		return err
 	}
@@ -254,7 +271,7 @@ func (s *Service) downloadTxt(resp *models.Response) error {
 	if err != nil {
 		return err
 	}
-	file, err := os.Create(fmt.Sprintf("../../output/%v.txt", resp.ID))
+	file, err := os.Create(fmt.Sprintf("./output/%v.txt", resp.ID))
 	if err != nil {
 		return err
 	}

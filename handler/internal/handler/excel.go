@@ -3,6 +3,7 @@ package handler
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/arielkka/fallbox/handler/internal/models"
@@ -10,6 +11,7 @@ import (
 )
 
 func (r *router) GetUserExcel(c echo.Context) error {
+	log.Println("Get user excel started")
 	req := new(models.Request)
 
 	err := json.NewDecoder(c.Request().Body).Decode(req)
@@ -17,17 +19,17 @@ func (r *router) GetUserExcel(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, err)
 	}
 
-	userID := new(models.UserID)
-
-	err = json.NewDecoder(c.Request().Body).Decode(userID)
+	cookieUserID, err := c.Cookie(r.cfg.Router.CookieUserID)
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, err)
+		return err
 	}
 
-	err = r.service.GetUserExcel(userID.ID, req.ID)
+	err = r.service.GetUserExcel(cookieUserID.Value, req.ID)
 	if err != nil {
 		return c.JSON(http.StatusNotFound, err)
 	}
+
+	log.Println("Get user excel finished")
 
 	return c.JSON(http.StatusOK, echo.Map{
 		"message": fmt.Sprintf("receive your excel by %v id :-)", req.ID),
@@ -35,21 +37,19 @@ func (r *router) GetUserExcel(c echo.Context) error {
 }
 
 func (r *router) PostUserExcel(c echo.Context) error {
-	userID := new(models.UserID)
+	cookieUserID, err := c.Cookie(r.cfg.Router.CookieUserID)
+	if err != nil {
+		return err
+	}
 
-	err := json.NewDecoder(c.Request().Body).Decode(userID)
+	path := new(models.FilePath)
+
+	err = json.NewDecoder(c.Request().Body).Decode(path)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err)
 	}
 
-	req := new(models.Request)
-
-	err = json.NewDecoder(c.Request().Body).Decode(req)
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, err)
-	}
-
-	excelID, err := r.service.AddUserExcel(userID.ID, req.Body)
+	excelID, err := r.service.AddUserExcel(cookieUserID.Value, path.Path)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err)
 	}
@@ -61,11 +61,9 @@ func (r *router) PostUserExcel(c echo.Context) error {
 }
 
 func (r *router) DeleteUserExcel(c echo.Context) error {
-	userID := new(models.UserID)
-
-	err := json.NewDecoder(c.Request().Body).Decode(userID)
+	cookieUserID, err := c.Cookie(r.cfg.Router.CookieUserID)
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, err)
+		return err
 	}
 
 	req := new(models.Request)
@@ -75,7 +73,7 @@ func (r *router) DeleteUserExcel(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, err)
 	}
 
-	err = r.service.DeleteUserExcel(userID.ID, req.ID)
+	err = r.service.DeleteUserExcel(cookieUserID.Value, req.ID)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err)
 	}

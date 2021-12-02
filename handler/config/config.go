@@ -17,20 +17,21 @@ type Service struct {
 }
 
 type Router struct {
-	Host   string `mapstructure:"host"`
-	Port   string `mapstructure:"port"`
-	Cookie string `mapstructure:"cookie"`
+	Host         string `mapstructure:"host"`
+	Port         string `mapstructure:"port"`
+	CookieToken  string `mapstructure:"cookie_token"`
+	CookieUserID string `mapstructure:"cookie_user_id"`
 
 	AuthPath     string `mapstructure:"auth_path"`
 	Registration string `mapstructure:"registration_path"`
 
-	GetUserExcel    string `mapstructure:"get_excel_png"`
-	PostUserExcel   string `mapstructure:"post_excel_png"`
-	DeleteUserExcel string `mapstructure:"delete_excel_png"`
+	GetUserExcel    string `mapstructure:"get_user_excel"`
+	PostUserExcel   string `mapstructure:"post_user_excel"`
+	DeleteUserExcel string `mapstructure:"delete_user_excel"`
 
-	GetUserTxt    string `mapstructure:"get_txt_jpg"`
-	PostUserTxt   string `mapstructure:"post_txt_jpg"`
-	DeleteUserTxt string `mapstructure:"delete_txt_jpg"`
+	GetUserTxt    string `mapstructure:"get_user_txt"`
+	PostUserTxt   string `mapstructure:"post_user_txt"`
+	DeleteUserTxt string `mapstructure:"delete_user_txt"`
 }
 
 type Message struct {

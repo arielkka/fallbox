@@ -2,11 +2,13 @@ package handler
 
 import (
 	"encoding/json"
+	"errors"
 	"github.com/arielkka/fallbox/handler/internal/models"
 	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 )
 
@@ -14,6 +16,13 @@ type jwtCustomClaims struct {
 	ID    string `json:"id"`
 	Login string `json:"name"`
 	jwt.StandardClaims
+}
+
+func (r *router) SkipJWTMiddleware(c echo.Context) bool {
+	if c.Path() == "/registration" || c.Path() == "/auth" {
+		return true
+	}
+	return false
 }
 
 func (r *router) registration(c echo.Context) error {
@@ -24,19 +33,16 @@ func (r *router) registration(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, err)
 	}
 
-	id, err := r.service.CreateUser(user.Login, user.Password)
+	err = r.service.CreateUser(user.Login, user.Password)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err)
+		if !strings.Contains(err.Error(), "Error 1062") {
+			return c.JSON(http.StatusInternalServerError, err)
+		}
 	}
 
-	err = c.JSON(http.StatusCreated, echo.Map{
-		"id": id,
+	return c.JSON(http.StatusCreated, echo.Map{
+		"message": "user was created",
 	})
-	if err != nil {
-		return err
-	}
-
-	return nil
 }
 
 func (r *router) auth(c echo.Context) error {
@@ -49,7 +55,7 @@ func (r *router) auth(c echo.Context) error {
 
 	id, err := r.service.GetUser(user.Login, user.Password)
 	if err != nil {
-		return c.JSON(http.StatusUnauthorized, err)
+		return c.JSON(http.StatusNotFound, err)
 	}
 
 	claims := &jwtCustomClaims{
@@ -62,12 +68,18 @@ func (r *router) auth(c echo.Context) error {
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
-	t, err := token.SignedString(os.Getenv("JWT_SECRET_KEY"))
+	key := os.Getenv("JWT_SECRET_KEY")
+	if key == "" {
+		return c.JSON(http.StatusBadRequest, errors.New("couldn't find jwt key"))
+	}
+	t, err := token.SignedString([]byte(key))
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err)
 	}
-
+	cookie := newCookie()
+	writeCookie(c, cookie, r.cfg.Router.CookieToken, t, time.Now().Add(15*time.Minute))
+	writeCookie(c, cookie, r.cfg.Router.CookieUserID, id, time.Now().Add(15*time.Minute))
 	return c.JSON(http.StatusOK, echo.Map{
-		"token": t,
+		"message": "authorization passed",
 	})
 }

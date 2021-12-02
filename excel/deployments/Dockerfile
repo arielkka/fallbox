@@ -15,6 +15,6 @@ RUN go mod download
 COPY . .
 
 ENV CGO_ENABLED=0 GOOS=linux GOARCH=amd64
-RUN go build -o txt ./cmd/main.go
+RUN go build -o excel ./cmd/main.go
 
-CMD ["./txt"]
+CMD ["./excel"]

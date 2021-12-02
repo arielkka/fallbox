@@ -2,6 +2,8 @@ package app
 
 import (
 	"fmt"
+	"os"
+
 	"github.com/arielkka/fallbox/excel/config"
 	"github.com/arielkka/fallbox/excel/internal/broker"
 	"github.com/arielkka/fallbox/excel/internal/service"
@@ -9,17 +11,16 @@ import (
 	"github.com/arielkka/fallbox/excel/pkg/mysql"
 	"github.com/arielkka/rabbitmq"
 	"github.com/joho/godotenv"
-	"os"
 )
 
 func init() {
-	if err := godotenv.Load("./handler.env"); err != nil {
+	if err := godotenv.Load("./excel.env"); err != nil {
 		fmt.Println("No .env file found", err)
 	}
 }
 
 func Run() {
-	log := logger.NewLogrus(os.Getenv("LOGGER_PATH_EXCEL"))
+	log := logger.NewLogrus(os.Getenv("LOGGER_PATH_EXCEL") + "/excel.log")
 	log.Println("logger initialized")
 
 	cfg, err := config.NewServiceConfig(os.Getenv("CONFIG_PATH_EXCEL"))

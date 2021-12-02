@@ -1,35 +1,44 @@
 up-containers:
-	docker-compose -f docker-compose.yml up
+	docker-compose -f docker-compose.yml up --build
+
 
 stop-containers:
-	docker stop $(docker ps -a -q)
+	docker stop $(docker ps -qa)
 
 delete-containers:
-	docker container prune $(docker ps -a -q)
+	docker container prune $(docker ps -q)
+
+
+migrate-up-all:
+	make migrate-up-handler-db && make migrate-up-excel-db && make migrate-up-txt-db
+
+migrate-down-all:
+	make migrate-down-handler-db && make migrate-down-excel-db && make migrate-down-txt-db
+
 
 migrate-up-handler-db:
 	migrate -path ./handler/schema -database 'mysql://root:root@tcp(localhost:3307)/handler_db' up
 
-migrate-up-png-db:
-	migrate -path ./png/schema -database 'mysql://root:root@tcp(localhost:3308)/png_db' up
+migrate-up-excel-db:
+	migrate -path ./excel/schema -database 'mysql://root:root@tcp(localhost:3308)/excel_db' up
 
-migrate-up-jpg-db:
-	migrate -path ./jpg/schema -database 'mysql://root:root@tcp(localhost:3309)/jpg_db' up
+migrate-up-txt-db:
+	migrate -path ./txt/schema -database 'mysql://root:root@tcp(localhost:3309)/txt_db' up
 
 migrate-down-handler-db:
 	migrate -path ./handler/schema -database 'mysql://root:root@tcp(localhost:3307)/handler_db' down
 
-migrate-down-png-db:
-	migrate -path ./png/schema -database 'mysql://root:root@tcp(localhost:3307)/png_db' down
+migrate-down-excel-db:
+	migrate -path ./excel/schema -database 'mysql://root:root@tcp(localhost:3308)/excel_db' down
 
-migrate-down-jpg-db:
-	migrate -path ./jpg/schema -database 'mysql://root:root@tcp(localhost:3307)/jpg_db' down
+migrate-down-txt-db:
+	migrate -path ./txt/schema -database 'mysql://root:root@tcp(localhost:3309)/txt_db' down
 
 migrate-dirty-handler-db:
 	migrate -path ./handler/schema -database 'mysql://root:root@tcp(localhost:3307)/handler_db' force 1
 
-migrate-dirty-png-db:
-	migrate -path ./png/schema -database 'mysql://root:root@tcp(localhost:3307)/png_db' force 1
+migrate-dirty-excel-db:
+	migrate -path ./excel/schema -database 'mysql://root:root@tcp(localhost:3308)/excel_db' force 1
 
-migrate-dirty-jpg-db:
-	migrate -path ./jpg/schema -database 'mysql://root:root@tcp(localhost:3307)/jpg_db' force 1
+migrate-dirty-txt-db:
+	migrate -path ./txt/schema -database 'mysql://root:root@tcp(localhost:3309)/txt_db' force 1

@@ -28,6 +28,9 @@ type (
 		UserID string `json:"user_id,omitempty"`
 		Body   []byte `json:"body,omitempty"`
 	}
+	FilePath struct {
+		Path string `json:"path"`
+	}
 )
 
 func NewUser(login, password string) *User {
@@ -35,6 +38,10 @@ func NewUser(login, password string) *User {
 		Login:    login,
 		Password: password,
 	}
+}
+
+func (f *FilePath) MarshalBinary() ([]byte, error) {
+	return json.Marshal(f)
 }
 
 func (u *User) MarshalBinary() ([]byte, error) {
