@@ -1,5 +1,7 @@
 package main
 
-func main() {
+import "github.com/arielkka/fallbox/excel/internal/app"
 
+func main() {
+	app.Run()
 }

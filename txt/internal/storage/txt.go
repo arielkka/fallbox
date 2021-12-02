@@ -12,17 +12,17 @@ func NewTxtStorage(db *sqlx.DB) *TXT {
 	return &TXT{db: db}
 }
 
-func (p *TXT) GetTxt(userID string, txtID int) ([]byte, error) {
+func (p *TXT) GetExcel(userID string, txtID int) ([]byte, error) {
 	panic("implement me")
 
 }
 
-func (p *TXT) AddTxt(userID string, txt []byte) (int, error) {
+func (p *TXT) AddExcel(userID string, txt []byte) (int, error) {
 	panic("implement me")
 
 }
 
-func (p *TXT) DeleteTxt(userID string, txtID int) error {
+func (p *TXT) DeleteExcel(userID string, txtID int) error {
 
 	panic("implement me")
 }

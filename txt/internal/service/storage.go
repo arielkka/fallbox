@@ -6,9 +6,9 @@ import (
 )
 
 type ITxt interface {
-	GetTxt(userID string, imgID int) ([]byte, error)
-	AddTxt(userID string, img []byte) (int, error)
-	DeleteTxt(userID string, imgID int) error
+	GetExcel(userID string, imgID int) ([]byte, error)
+	AddExcel(userID string, img []byte) (int, error)
+	DeleteExcel(userID string, imgID int) error
 }
 
 type Storage struct {

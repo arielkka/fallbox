@@ -3,7 +3,7 @@ package mysql
 import (
 	"fmt"
 
-	"github.com/arielkka/fallbox/handler/config"
+	"github.com/arielkka/fallbox/excel/config"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
 )

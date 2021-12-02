@@ -16,10 +16,10 @@ import (
 type Service struct {
 	cfg     *config.Config
 	broker  Broker
-	storage IUser
+	storage *Storage
 }
 
-func NewService(cfg *config.Config, broker Broker, storage IUser) *Service {
+func NewService(cfg *config.Config, broker Broker, storage *Storage) *Service {
 	return &Service{
 		cfg:     cfg,
 		broker:  broker,

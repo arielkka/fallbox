@@ -6,9 +6,9 @@ import (
 )
 
 type IExcel interface {
-	GetTxt(userID string, imgID int) ([]byte, error)
-	AddTxt(userID string, img []byte) (int, error)
-	DeleteTxt(userID string, imgID int) error
+	GetExcel(userID string, excelID int) ([]byte, error)
+	AddExcel(userID string, excel []byte) (int, error)
+	DeleteExcel(userID string, excelID int) error
 }
 
 type Storage struct {

@@ -16,6 +16,7 @@ type (
 	Response struct {
 		Body []byte `json:"body,omitempty"`
 		ID   int    `json:"id,omitempty"`
+		Err  string `json:"err,omitempty"`
 	}
 
 	IsDeleted struct {
